@@ -8,11 +8,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nekara.Core;
+using Nekara.Client;
 
 namespace Orleans.Runtime
 {
     internal class GrainReferenceRuntime : IGrainReferenceRuntime
     {
+        public static ITestingService nekara = RuntimeEnvironment.Client.Api;
+
         private const bool USE_DEBUG_CONTEXT = false;
         private const bool USE_DEBUG_CONTEXT_PARAMS = false;
         private static readonly ConcurrentDictionary<int, string> debugContexts = new ConcurrentDictionary<int, string>();
@@ -65,6 +69,8 @@ namespace Orleans.Runtime
                 this.serializationManager.DeepCopyElementsInPlace(arguments);
             }
 
+            // Inform Nekara server about the creation of the Task
+            nekara.CreateTask();
             var request = new InvokeMethodRequest(reference.InterfaceId, reference.InterfaceVersion, methodId, arguments);
 
             if (IsUnordered(reference))

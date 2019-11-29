@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.Configuration;
+/*using Nekara.Core;
+using Nekara.Client;*/
 
 namespace Orleans.Runtime.Scheduler
 {
     [DebuggerDisplay("OrleansTaskScheduler RunQueueLength={" + nameof(RunQueueLength) + "}")]
     internal class OrleansTaskScheduler : TaskScheduler, ITaskScheduler, IHealthCheckParticipant
     {
+        /*public static ITestingService nekara = RuntimeEnvironment.Client.Api;*/
+
         private readonly ILogger logger;
         private readonly ILoggerFactory loggerFactory;
         private readonly SchedulerStatisticsGroup schedulerStatistics;
