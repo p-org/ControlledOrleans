@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 
 namespace Orleans.Runtime
 {
@@ -9,6 +10,6 @@ namespace Orleans.Runtime
 
         IAsyncEnumerable<ClusterMembershipSnapshot> MembershipUpdates { get; }
 
-        ValueTask Refresh(MembershipVersion minimumVersion = default);
+        System.Threading.Tasks.ValueTask Refresh(MembershipVersion minimumVersion = default);
     }
 }

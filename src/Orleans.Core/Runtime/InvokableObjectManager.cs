@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Orleans.CodeGeneration;
 using Orleans.Runtime;
@@ -114,11 +114,12 @@ namespace Orleans
                 // return Task.StartNew(() => ..., new CancellationToken());
                 // We pass these options to Task.Factory.StartNew as they make the call identical
                 // to Task.Run. See: https://blogs.msdn.microsoft.com/pfxteam/2011/10/24/task-run-vs-task-factory-startnew/
-                Task.Factory.StartNew(
+
+                Task.Factory.StartNew<Task>(
                         this.dispatchFunc,
                         objectData,
                         CancellationToken.None,
-                        TaskCreationOptions.DenyChildAttach,
+                        System.Threading.Tasks.TaskCreationOptions.DenyChildAttach,
                         TaskScheduler.Default).Ignore();
             }
         }

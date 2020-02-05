@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -73,7 +73,7 @@ namespace Orleans.Runtime.Messaging
         public void Start()
         {
             if (this.listener is null) throw new InvalidOperationException("Listener is not bound");
-            this.acceptLoopTcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            this.acceptLoopTcs = new TaskCompletionSource<object>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
             ThreadPool.UnsafeQueueUserWorkItem(this.StartAcceptingConnections, this.acceptLoopTcs);
         }
 
@@ -111,9 +111,23 @@ namespace Orleans.Runtime.Messaging
             {
                 if (this.acceptLoopTcs is object)
                 {
+                    /* Nekara code - for Testing */
+                    Task _t1 = Task.Run(async () =>
+                    {
+                        await System.Threading.Tasks.Task.WhenAll(this.listener.UnbindAsync(cancellationToken).AsTask());
+                    });
+
                     await Task.WhenAll(
-                        this.listener.UnbindAsync(cancellationToken).AsTask(),
+                        _t1,
                         this.acceptLoopTcs.Task);
+                    /* Nekara code - for Testing */
+
+                    /* actual code */
+                    /* await Task.WhenAll(
+                        this.listener.UnbindAsync(cancellationToken).AsTask(),
+                        this.acceptLoopTcs.Task); */
+                    /* actual code */
+
                 }
                 else
                 {

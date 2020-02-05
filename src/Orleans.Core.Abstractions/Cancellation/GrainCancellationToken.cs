@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Orleans.CodeGeneration;
 using Orleans.Runtime;
 using Orleans.Serialization;
@@ -77,7 +78,7 @@ namespace Orleans
                 {
                     var completion = new TaskCompletionSource<object>();
                     completion.TrySetException(exception);
-                    return completion.Task;
+                    return completion.task;
                 }
             }
 

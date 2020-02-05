@@ -7,6 +7,45 @@ All notable end-user facing changes are documented in this file.
 *Here are all the changes in `master` branch, and will be moved to the appropriate release once they are included in a published nuget package.
 The idea is to track end-user facing changes as they occur.*
 
+### [3.0.2] (changes since 3.0.1)
+
+- Non-breaking improvements
+  - Specify endpoint AddressFamily in Socket constructor (#6168)
+  - Make IFatalErrorHandler public so that it can be replaced by users (#6170)
+ 
+- Non-breaking bug fixes
+  - CodeGen: fix ambiguous reference to Orleans namespace (#6171)
+
+### [3.0.1] (changes since 3.0.0)
+
+- Non-breaking improvements
+  - Azure table grain storage inconsistent state on not found (#6071)
+  - Removed silo status check before cleaing up system targets from… (#6072)
+  - Do not include grain identifier in the ILogger category name (#6122)
+ 
+- Non-breaking bug fixes
+  - Consul: support extended membership protocol (#6095)
+  - Fix routing of gateway count changed events to registered servi… (#6102)
+  - Allow negative values in TypeCodeAttribute. Fixes #6114 (#6127)
+  - DynamoDB: support extended membership protocol (#6126)
+  - Redact logged connection string in ADO storage provider during init (#6139)
+  - Fixed CodeGenerator.MSBuild cannot ResolveAssembly in .NetCore 3.0 (#6143)
+
+### [2.4.4] (changes since 2.4.3)
+
+- Non-breaking improvements
+  - Add warning message at startup (#6041)
+  - Implement CleanupDefunctSiloEntries for Consul membership provider (#6056)
+  - Fixed typo in exception (#6091)
+
+- Non-breaking bug fixes
+  - Fix potential rare NullReferenceException in GrainTimer (#6043)
+  - Consul: support extended membership protocol (#6095)
+  - Fix routing of gateway count changed events to registered servi… (#6102)
+  - Allow negative values in TypeCodeAttribute. Fixes #6114 (#6127)
+  - DynamoDB: support extended membership protocol (#6126)
+  - Redact logged connection string in ADO storage provider during init (#6139)
+
 ### [3.0.0] (changes since 3.0.0-rc2)
 
 - Non-breaking improvements

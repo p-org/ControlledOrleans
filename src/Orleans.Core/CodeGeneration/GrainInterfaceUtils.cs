@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Orleans.Concurrency;
 using Orleans.Runtime;
 using Orleans.Transactions;
@@ -87,7 +87,7 @@ namespace Orleans.CodeGeneration
             {
                 var typeName = t.GetGenericTypeDefinition().FullName;
                 return typeName == "System.Threading.Tasks.Task`1" 
-                       || typeName == "System.Threading.Tasks.ValueTask`1";
+                       || typeName == "System.Threading.Tasks.System.Threading.Tasks.ValueTask`1";
             }
 
             return false;
@@ -288,11 +288,12 @@ namespace Orleans.CodeGeneration
                             type.FullName, method.Name));
                     }
                 }
-                else if (!IsTaskType(method.ReturnType))
-                {
-                    success = false;
-                    violations.Add(String.Format("Method {0}.{1} must return Task or Task<T> because it is defined within a grain interface.",
-                        type.FullName, method.Name));
+                // else if (!IsTaskType(method.ReturnType))
+                else if (false)
+                        {
+                    // success = false;
+                    // violations.Add(String.Format("Method {0}.{1} must return Task or Task<T> because it is defined within a grain interface.",
+                       //  type.FullName, method.Name));
                 }
 
                 ParameterInfo[] parameters = method.GetParameters();
@@ -421,10 +422,7 @@ namespace Orleans.CodeGeneration
         private static int GetTypeCode(Type grainInterfaceOrClass)
         {
             var attr = grainInterfaceOrClass.GetCustomAttributes<TypeCodeOverrideAttribute>(false).FirstOrDefault();
-            if (attr != null && attr.TypeCode > 0)
-            {
-                return attr.TypeCode;
-            }
+            if (attr != null) return attr.TypeCode;
 
             var fullName = TypeUtils.GetTemplatedName(
                 TypeUtils.GetFullName(grainInterfaceOrClass), 

@@ -5,7 +5,7 @@ namespace Orleans.CodeGenerator
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
-    using System.Threading.Tasks;
+    using Nekara.Client; using Nekara.Models; 
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Orleans.CodeGeneration;

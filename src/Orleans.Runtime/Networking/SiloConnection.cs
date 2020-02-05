@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using Orleans.Configuration;
@@ -207,8 +207,19 @@ namespace Orleans.Runtime.Messaging
                     }
                     else
                     {
-                        // Outbound connection
-                        await Task.WhenAll(ReadPreamble().AsTask(), WritePreamble());
+                        /* Nekara code - for Testing */
+                        Task _t1 = Task.Run(async () =>
+                        {
+                            await System.Threading.Tasks.Task.WhenAll(ReadPreamble().AsTask());
+                        });
+
+                        await Task.WhenAll(_t1, WritePreamble());
+                        /* Nekara code - for Testing */
+
+                        /* actual code */
+                        /* // Outbound connection
+                        await Task.WhenAll(ReadPreamble().AsTask(), WritePreamble()); */
+                        /* actual code */
                     }
                 }
 
@@ -237,7 +248,7 @@ namespace Orleans.Runtime.Messaging
                     this.LocalSiloAddress);
             }
 
-            async ValueTask<NetworkProtocolVersion> ReadPreamble()
+            async System.Threading.Tasks.ValueTask<NetworkProtocolVersion> ReadPreamble()
             {
                 var (grainId, protocolVersion, siloAddress) = await ConnectionPreamble.Read(this.Context);
 

@@ -6,7 +6,7 @@ using System.Net;
 using System.Runtime;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -62,7 +62,7 @@ namespace Orleans.Runtime
         private readonly ILogger logger;
         private TypeManager typeManager;
         private readonly TaskCompletionSource<int> siloTerminatedTask =
-            new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+            new TaskCompletionSource<int>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
         private readonly SiloStatisticsManager siloStatistics;
         private readonly InsideRuntimeClient runtimeClient;
         private IReminderService reminderService;

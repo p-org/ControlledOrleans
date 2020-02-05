@@ -6,7 +6,7 @@ namespace Orleans.CodeGenerator
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Threading.Tasks;
+    using Nekara.Client; using Nekara.Models; 
     using Orleans.Runtime;
     using Orleans.Serialization;
     using GrainInterfaceUtils = Orleans.CodeGeneration.GrainInterfaceUtils;

@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime.Scheduler;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +47,7 @@ namespace Orleans.Runtime
             TaskScheduler.UnobservedTaskException += InternalUnobservedTaskExceptionHandler;
         }
 
-        private void InternalUnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs e)
+        private void InternalUnobservedTaskExceptionHandler(object sender, System.Threading.Tasks.UnobservedTaskExceptionEventArgs e)
         {
             var aggrException = e.Exception;
             var baseException = aggrException.GetBaseException();

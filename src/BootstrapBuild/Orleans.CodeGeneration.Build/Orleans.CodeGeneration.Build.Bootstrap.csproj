@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="Build;PostBuildPublish">
+﻿<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="Build;PostBuildPublish">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <TargetFramework Condition="'$(OS)' != 'Windows_NT'">netcoreapp3.0</TargetFramework>
@@ -22,7 +22,8 @@
   
   <ItemGroup>
     <PackageReference Include="System.Runtime" Version="$(SystemRuntimeVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+    <!-- <PackageReference Include="Newtonsoft.Json" Version="10.0.3" /> -->
+    <!-- <PackageReference Include="Newtonsoft.Json" Version="10.0.3" /> -->
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(MicrosoftExtensionsDependencyModelVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsLoggingVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftExtensionsLoggingVersion)" />
@@ -41,6 +42,18 @@
     <ProjectReference Include="..\..\Orleans.Core.Abstractions\Orleans.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Orleans.CodeGeneration\Orleans.CodeGeneration.Bootstrap.csproj" />
     <ProjectReference Include="..\Orleans.Core\Orleans.Core.Bootstrap.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NekaraClient">
+      <HintPath>..\..\..\..\..\..\Documents\ts_modify\TestingService\NekaraModels\bin\Debug\netstandard2.0\NekaraClient.dll</HintPath>
+    </Reference>
+    <Reference Include="NekaraModels">
+      <HintPath>..\..\..\..\..\..\Documents\ts_modify\TestingService\NekaraModels\bin\Debug\netstandard2.0\NekaraModels.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\newtonsoft.json\10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuildPublish" AfterTargets="Build">

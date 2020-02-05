@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.CodeGeneration;
@@ -677,7 +677,7 @@ namespace Orleans.Runtime
             try
             {
                 var messageAddressingTask = AddressMessage(message);
-                if (messageAddressingTask.Status == TaskStatus.RanToCompletion)
+                if (messageAddressingTask.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                     TransportMessage(message, sendingActivation);
                 }

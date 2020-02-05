@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 
 namespace Orleans.Runtime.Scheduler
@@ -46,24 +46,24 @@ namespace Orleans.Runtime.Scheduler
 
 #if DEBUG
             if (logger.IsEnabled(LogLevel.Trace)) logger.Trace("Completed Task Id={0},Name={1} with Status={2} {3}",
-                    task.Id, Name, task.Status, task.Status == TaskStatus.Faulted ? "FAULTED: " + task.Exception : "");
+                    task.Id, Name, task.Status, task.Status == System.Threading.Tasks.TaskStatus.Faulted ? "FAULTED: " + task.Exception : "");
 #endif
         }
 
         internal static bool IsTaskRunning(Task t)
         {
             return !(
-                t.Status == TaskStatus.Created
-                || t.Status == TaskStatus.WaitingForActivation
+                t.Status == System.Threading.Tasks.TaskStatus.Created
+                || t.Status == System.Threading.Tasks.TaskStatus.WaitingForActivation
             );
         }
 
         internal static bool IsTaskFinished(Task t)
         {
             return (
-                t.Status == TaskStatus.RanToCompletion
-                || t.Status == TaskStatus.Faulted
-                || t.Status == TaskStatus.Canceled
+                t.Status == System.Threading.Tasks.TaskStatus.RanToCompletion
+                || t.Status == System.Threading.Tasks.TaskStatus.Faulted
+                || t.Status == System.Threading.Tasks.TaskStatus.Canceled
             );
         }
 

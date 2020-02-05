@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -38,7 +38,7 @@ namespace Orleans.Runtime.Messaging
             this.localSiloDetails = localSiloDetails;
         }
 
-        public override ValueTask<Connection> ConnectAsync(SiloAddress address, CancellationToken cancellationToken)
+        public override System.Threading.Tasks.ValueTask<Connection> ConnectAsync(SiloAddress address, CancellationToken cancellationToken)
         {
             EnsureInitialized();
 

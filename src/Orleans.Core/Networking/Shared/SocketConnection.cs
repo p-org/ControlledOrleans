@@ -5,7 +5,8 @@ using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +18,7 @@ namespace Orleans.Networking.Shared
         private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         private static readonly bool IsMacOS = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
-        private readonly Socket _socket;
+        private readonly System.Net.Sockets.Socket _socket;
         private readonly ISocketsTrace _trace;
         private readonly SocketReceiver _receiver;
         private readonly SocketSender _sender;
@@ -27,10 +28,10 @@ namespace Orleans.Networking.Shared
         private volatile bool _socketDisposed;
         private volatile Exception _shutdownReason;
         private Task _processingTask;
-        private readonly TaskCompletionSource<object> _waitForConnectionClosedTcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource<object> _waitForConnectionClosedTcs = new TaskCompletionSource<object>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
         private bool _connectionClosed;
 
-        internal SocketConnection(Socket socket,
+        internal SocketConnection(System.Net.Sockets.Socket socket,
                                   MemoryPool<byte> memoryPool,
                                   PipeScheduler scheduler,
                                   ISocketsTrace trace,
@@ -113,7 +114,7 @@ namespace Orleans.Networking.Shared
         }
 
         // Only called after connection middleware is complete which means the ConnectionClosed token has fired.
-        public override async ValueTask DisposeAsync()
+        public override async System.Threading.Tasks.ValueTask DisposeAsync()
         {
             Transport.Input.Complete();
             Transport.Output.Complete();

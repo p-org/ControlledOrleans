@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 
 namespace Orleans.Runtime.Scheduler

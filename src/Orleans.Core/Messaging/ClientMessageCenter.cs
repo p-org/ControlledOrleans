@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.Configuration;
@@ -194,7 +194,7 @@ namespace Orleans.Messaging
             {
                 _ = SendAsync(connectionTask, msg);
 
-                async Task SendAsync(ValueTask<Connection> task, Message message)
+                async Task SendAsync(System.Threading.Tasks.ValueTask<Connection> task, Message message)
                 {
                     try
                     {
@@ -224,8 +224,8 @@ namespace Orleans.Messaging
                                 state => this.SendMessage((Message)state),
                                 message,
                                 CancellationToken.None,
-                                TaskCreationOptions.DenyChildAttach,
-                                TaskScheduler.Default);
+                                System.Threading.Tasks.TaskCreationOptions.DenyChildAttach,
+                                System.Threading.Tasks.TaskScheduler.Default);
                         }
                         else
                         {
@@ -236,7 +236,7 @@ namespace Orleans.Messaging
             }
         }
 
-        private ValueTask<Connection> GetGatewayConnection(Message msg)
+        private System.Threading.Tasks.ValueTask<Connection> GetGatewayConnection(Message msg)
         {
             // If there's a specific gateway specified, use it
             if (msg.TargetSilo != null && gatewayManager.GetLiveGateways().Contains(msg.TargetSilo))
@@ -264,7 +264,7 @@ namespace Orleans.Messaging
                 {
                     RejectMessage(msg, "No gateways available");
                     logger.Warn(ErrorCode.ProxyClient_CannotSend, "Unable to send message {0}; gateway manager state is {1}", msg, gatewayManager);
-                    return new ValueTask<Connection>(default(Connection));
+                    return new System.Threading.Tasks.ValueTask<Connection>(default(Connection));
                 }
 
                 var gatewayAddress = gatewayAddresses[msgNumber % numGateways];
@@ -287,7 +287,7 @@ namespace Orleans.Messaging
 
             if (weakRef != null && weakRef.TryGetTarget(out var existingConnection) && existingConnection.IsValid)
             {
-                return new ValueTask<Connection>(existingConnection);
+                return new System.Threading.Tasks.ValueTask<Connection>(existingConnection);
             }
 
             var addr = gatewayManager.GetLiveGateway();
@@ -295,7 +295,7 @@ namespace Orleans.Messaging
             {
                 RejectMessage(msg, "No gateways available");
                 logger.Warn(ErrorCode.ProxyClient_CannotSend_NoGateway, "Unable to send message {0}; gateway manager state is {1}", msg, gatewayManager);
-                return new ValueTask<Connection>(default(Connection));
+                return new System.Threading.Tasks.ValueTask<Connection>(default(Connection));
             }
             if (logger.IsEnabled(LogLevel.Trace)) logger.Trace(ErrorCode.ProxyClient_NewBucketIndex, "Starting new bucket index {0} for ordered messages to grain {1}", index, msg.TargetGrain);
 
@@ -316,9 +316,9 @@ namespace Orleans.Messaging
 
             return AddToBucketAsync(index, gatewayConnection, addr);
 
-            async ValueTask<Connection> AddToBucketAsync(
+            async System.Threading.Tasks.ValueTask<Connection> AddToBucketAsync(
                 uint bucketIndex,
-                ValueTask<Connection> connectionTask,
+                System.Threading.Tasks.ValueTask<Connection> connectionTask,
                 SiloAddress gatewayAddress)
             {
                 try
@@ -335,9 +335,9 @@ namespace Orleans.Messaging
                 }
             }
 
-            async ValueTask<Connection> ConnectAsync(
+            async System.Threading.Tasks.ValueTask<Connection> ConnectAsync(
                 SiloAddress gateway,
-                ValueTask<Connection> connectionTask,
+                System.Threading.Tasks.ValueTask<Connection> connectionTask,
                 Message message,
                 bool directGatewayMessage)
             {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,7 +22,7 @@ namespace Orleans.Runtime.Messaging
         private readonly INetworkingTrace trace;
         private readonly CancellationTokenSource cancellation = new CancellationTokenSource();
         private readonly object lockObj = new object();
-        private readonly TaskCompletionSource<int> closedTaskCompletionSource = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource<int> closedTaskCompletionSource = new TaskCompletionSource<int>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
 
         public ConnectionManager(
             IOptions<ConnectionOptions> connectionOptions,
@@ -54,7 +54,7 @@ namespace Orleans.Runtime.Messaging
 
         public ImmutableArray<SiloAddress> GetConnectedAddresses() => this.connections.Keys.ToImmutableArray();
 
-        public ValueTask<Connection> GetConnection(SiloAddress endpoint)
+        public System.Threading.Tasks.ValueTask<Connection> GetConnection(SiloAddress endpoint)
         {
             if (this.connections.TryGetValue(endpoint, out var entry) && entry.TryGetConnection(out var connection))
             {
@@ -65,11 +65,16 @@ namespace Orleans.Runtime.Messaging
                 }
 
                 // Return the existing connection.
-                return new ValueTask<Connection>(connection);
+                return new System.Threading.Tasks.ValueTask<Connection>(connection);
             }
 
             // Start a new connection attempt since there are no suitable connections.
-            return new ValueTask<Connection>(this.GetConnectionAsync(endpoint));
+
+
+            // return new System.Threading.Tasks.ValueTask<Connection>(this.GetConnectionAsync(endpoint));
+
+            System.Threading.Tasks.Task<Connection> _temp1 = this.GetConnectionAsync(endpoint).InnerTask;
+            return new System.Threading.Tasks.ValueTask<Connection>(_temp1);
         }
 
         private async Task<Connection> GetConnectionAsync(SiloAddress endpoint)
@@ -238,9 +243,7 @@ namespace Orleans.Runtime.Messaging
                 openConnectionCancellation = CancellationTokenSource.CreateLinkedTokenSource(this.cancellation.Token);
                 openConnectionCancellation.CancelAfter(this.connectionOptions.OpenConnectionTimeout);
 
-                var connection = await this.connectionFactory.ConnectAsync(address, openConnectionCancellation.Token)
-                    .AsTask()
-                    .WithCancellation(openConnectionCancellation.Token);
+                var connection = await this.connectionFactory.ConnectAsync(address, openConnectionCancellation.Token).AsTask();//.WithCancellation(openConnectionCancellation.Token);
 
                 if (this.trace.IsEnabled(LogLevel.Information))
                 {

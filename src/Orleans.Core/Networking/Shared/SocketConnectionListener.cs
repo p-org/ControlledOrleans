@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 
 namespace Orleans.Networking.Shared
@@ -14,7 +14,7 @@ namespace Orleans.Networking.Shared
         private readonly MemoryPool<byte> _memoryPool;
         private readonly SocketSchedulers _schedulers;
         private readonly ISocketsTrace _trace;
-        private Socket _listenSocket;
+        private System.Net.Sockets.Socket _listenSocket;
         private readonly SocketConnectionOptions _options;
 
         public EndPoint EndPoint { get; private set; }
@@ -43,7 +43,7 @@ namespace Orleans.Networking.Shared
                 throw new InvalidOperationException("Transport already bound");
             }
 
-            var listenSocket = new Socket(EndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            var listenSocket = new System.Net.Sockets.Socket(EndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listenSocket.EnableFastPath();
 
             // Kestrel expects IPv6Any to bind to both IPv6 and IPv4
@@ -68,7 +68,7 @@ namespace Orleans.Networking.Shared
             _listenSocket = listenSocket;
         }
 
-        public async ValueTask<ConnectionContext> AcceptAsync(CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.ValueTask<ConnectionContext> AcceptAsync(CancellationToken cancellationToken = default)
         {
             while (true)
             {
@@ -101,14 +101,14 @@ namespace Orleans.Networking.Shared
             }
         }
 
-        public ValueTask UnbindAsync(CancellationToken cancellationToken)
+        public System.Threading.Tasks.ValueTask UnbindAsync(CancellationToken cancellationToken)
         {
             _listenSocket?.Dispose();
 
             return default;
         }
 
-        public ValueTask DisposeAsync()
+        public System.Threading.Tasks.ValueTask DisposeAsync()
         {
             _listenSocket?.Dispose();
             // Dispose the memory pool

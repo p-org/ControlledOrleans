@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -134,7 +134,7 @@ namespace Orleans.CodeGenerator.Generators
                     {
                         body.Add(
                             ExpressionStatement(
-                                InvocationExpression(wellKnownTypes.GrainFactoryBase.ToDisplayString().ToIdentifierName().Member("CheckGrainObserverParamInternal"))
+                                InvocationExpression(wellKnownTypes.GrainFactoryBase.ToNameSyntax().Member("CheckGrainObserverParamInternal"))
                                     .AddArgumentListArguments(Argument(parameter.Name.ToIdentifierName()))));
                     }
                 }

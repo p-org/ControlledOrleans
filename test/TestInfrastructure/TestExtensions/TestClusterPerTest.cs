@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -8,7 +8,7 @@ using Orleans.TestingHost;
 
 namespace TestExtensions
 {
-    public abstract class TestClusterPerTest : OrleansTestingBase, IDisposable, Xunit.IAsyncLifetime
+    public abstract class TestClusterPerTest : OrleansTestingBase, Nekara.Models.Xunit.IAsyncLifetime
     {
         private readonly ExceptionDispatchInfo preconditionsException;
         static TestClusterPerTest()

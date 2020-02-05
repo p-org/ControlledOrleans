@@ -14,5 +14,14 @@
     <PackageReference Include="Xunit.SkippableFact" Version="$(XunitSkippableFactVersion)" />
     <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NekaraClient">
+      <HintPath>..\..\..\..\..\..\Documents\ts_modify\TestingService\NekaraModels\bin\Debug\netstandard2.0\NekaraClient.dll</HintPath>
+    </Reference>
+    <Reference Include="NekaraModels">
+      <HintPath>..\..\..\..\..\..\Documents\ts_modify\TestingService\NekaraModels\bin\Debug\netstandard2.0\NekaraModels.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   
 </Project>

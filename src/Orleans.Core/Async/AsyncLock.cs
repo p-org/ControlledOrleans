@@ -1,6 +1,7 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+// using System.Threading;
+using Nekara.Client;
+using Nekara.Models; 
 
 namespace Orleans
 {
@@ -61,11 +62,12 @@ namespace Orleans
                 return Task.FromResult((IDisposable)new LockReleaser(this));
             else
             {
-                return wait.ContinueWith(
+                throw new NotImplementedException();
+               /* return wait.ContinueWith(
                     _ => (IDisposable)new LockReleaser(this),
-                    CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Default);
+                    System.Threading.CancellationToken.None,
+                    System.Threading.Tasks.TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default); */
             }
         }
 

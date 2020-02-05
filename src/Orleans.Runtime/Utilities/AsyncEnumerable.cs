@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Orleans.Internal;
 
 namespace Orleans.Runtime.Utilities
@@ -119,13 +120,14 @@ namespace Orleans.Runtime.Utilities
 
             T IAsyncEnumerator<T>.Current => this.current.Value;
 
-            async ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync()
+            async System.Threading.Tasks.ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync()
             {
                 Task<Element> next;
                 if (this.cancellation != default)
                 {
                     next = this.current.NextAsync();
-                    var result = await Task.WhenAny(this.cancellation, next);
+
+                    var result = Task.WhenAny(this.cancellation, next);
                     if (ReferenceEquals(result, this.cancellation)) return false;
                 }
                 else
@@ -137,7 +139,7 @@ namespace Orleans.Runtime.Utilities
                 return this.current.IsValid;
             }
 
-            ValueTask IAsyncDisposable.DisposeAsync() => default;
+            System.Threading.Tasks.ValueTask IAsyncDisposable.DisposeAsync() => default;
         }
 
         private sealed class Element
@@ -148,16 +150,16 @@ namespace Orleans.Runtime.Utilities
             public Element(T value)
             {
                 this.value = value;
-                this.next = new TaskCompletionSource<Element>(TaskCreationOptions.RunContinuationsAsynchronously);
+                this.next = new TaskCompletionSource<Element>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
             }
 
             public static Element CreateInitial() => new Element(
                 AsyncEnumerable.InitialValue,
-                new TaskCompletionSource<Element>(TaskCreationOptions.RunContinuationsAsynchronously));
+                new TaskCompletionSource<Element>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously));
 
             public static Element CreateDisposed()
             {
-                var tcs = new TaskCompletionSource<Element>(TaskCreationOptions.RunContinuationsAsynchronously);
+                var tcs = new TaskCompletionSource<Element>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
                 tcs.SetException(new ObjectDisposedException("This instance has been disposed"));
                 return new Element(AsyncEnumerable.DisposedValue, tcs);
             }

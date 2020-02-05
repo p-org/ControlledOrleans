@@ -1,6 +1,8 @@
 using System;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Microsoft.Extensions.Logging;
+// using Nekara.Core;
 
 namespace Orleans.Runtime.Scheduler
 {
@@ -11,8 +13,14 @@ namespace Orleans.Runtime.Scheduler
         private readonly Message message;
         private readonly Dispatcher dispatcher;
 
+        /* public static ITestingService nekara = RuntimeEnvironment.Client.Api;
+        public static Nekara.Helpers.UniqueIdGenerator TaskIdGenerator = RuntimeEnvironment.Client.TaskIdGenerator; */
+
         public InvokeWorkItem(ActivationData activation, Message message, Dispatcher dispatcher, ILogger logger)
         {
+            // nekara.CreateTask();
+            // Console.WriteLine("Testing - Arun");
+
             this.logger = logger;
             if (activation?.GrainInstance == null)
             {
@@ -40,8 +48,11 @@ namespace Orleans.Runtime.Scheduler
 
         public override void Execute()
         {
+            // var taskId = TaskIdGenerator.Generate();
             try
             {
+                // nekara.StartTask(taskId);
+
                 var grain = activation.GrainInstance;
                 var runtimeClient = this.dispatcher.RuntimeClient;
                 Task task = runtimeClient.Invoke(grain, this.activation, this.message);
@@ -55,6 +66,7 @@ namespace Orleans.Runtime.Scheduler
                 {
                     task.ContinueWith(t => OnComplete()).Ignore();
                 }
+                // nekara.EndTask(taskId);
             }
             catch (Exception exc)
             {

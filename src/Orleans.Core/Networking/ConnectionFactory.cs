@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using Orleans.Configuration;
@@ -48,7 +48,7 @@ namespace Orleans.Runtime.Messaging
 
         protected abstract Connection CreateConnection(SiloAddress address, ConnectionContext context);
 
-        public virtual async ValueTask<Connection> ConnectAsync(SiloAddress address, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.ValueTask<Connection> ConnectAsync(SiloAddress address, CancellationToken cancellationToken)
         {
             var connectionContext = await this.connectionFactory.ConnectAsync(address.Endpoint, cancellationToken);
             var connection = this.CreateConnection(address, connectionContext);

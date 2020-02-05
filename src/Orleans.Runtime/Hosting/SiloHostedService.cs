@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Orleans.Hosting
 {
-    internal class SiloHostedService : IHostedService
+    internal class SiloHostedService  : IHostedService
     {
         private readonly ILogger logger;
         private readonly ISiloHost siloHost;
@@ -35,6 +36,16 @@ namespace Orleans.Hosting
             this.logger.LogInformation("Stopping Orleans Silo");
             await this.siloHost.StopAsync(cancellationToken).ConfigureAwait(false);
             this.logger.LogInformation("Orleans Silo stopped.");
+        }
+
+        System.Threading.Tasks.Task IHostedService.StartAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        System.Threading.Tasks.Task IHostedService.StopAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         private void ValidateSystemConfiguration(IEnumerable<IConfigurationValidator> configurationValidators)

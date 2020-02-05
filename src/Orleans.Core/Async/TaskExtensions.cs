@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client;
+using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime;
 
@@ -20,13 +21,13 @@ namespace Orleans.Internal
         {
             switch (task.Status)
             {
-                case TaskStatus.RanToCompletion:
+                case System.Threading.Tasks.TaskStatus.RanToCompletion:
                     return CompletedTask;
 
-                case TaskStatus.Faulted:
+                case System.Threading.Tasks.TaskStatus.Faulted:
                     return TaskFromFaulted(task);
 
-                case TaskStatus.Canceled:
+                case System.Threading.Tasks.TaskStatus.Canceled:
                     return CanceledTask;
 
                 default:
@@ -52,13 +53,13 @@ namespace Orleans.Internal
 
             switch (task.Status)
             {
-                case TaskStatus.RanToCompletion:
+                case System.Threading.Tasks.TaskStatus.RanToCompletion:
                     return Task.FromResult((object)GetResult(task));
 
-                case TaskStatus.Faulted:
+                case System.Threading.Tasks.TaskStatus.Faulted:
                     return TaskFromFaulted(task);
 
-                case TaskStatus.Canceled:
+                case System.Threading.Tasks.TaskStatus.Canceled:
                     return CanceledTask;
 
                 default:
@@ -83,13 +84,13 @@ namespace Orleans.Internal
 
             switch (task.Status)
             {
-                case TaskStatus.RanToCompletion:
+                case System.Threading.Tasks.TaskStatus.RanToCompletion:
                     return Task.FromResult((T)GetResult(task));
 
-                case TaskStatus.Faulted:
+                case System.Threading.Tasks.TaskStatus.Faulted:
                     return TaskFromFaulted<T>(task);
 
-                case TaskStatus.Canceled:
+                case System.Threading.Tasks.TaskStatus.Canceled:
                     return TaskFromCanceled<T>();
 
                 default:
@@ -193,12 +194,12 @@ namespace Orleans.Internal
 
         internal static String ToString(this Task t)
         {
-            return t == null ? "null" : string.Format("[Id={0}, Status={1}]", t.Id, Enum.GetName(typeof(TaskStatus), t.Status));
+            return t == null ? "null" : string.Format("[Id={0}, Status={1}]", t.Id, Enum.GetName(typeof(System.Threading.Tasks.TaskStatus), t.Status));
         }
 
         internal static String ToString<T>(this Task<T> t)
         {
-            return t == null ? "null" : string.Format("[Id={0}, Status={1}]", t.Id, Enum.GetName(typeof(TaskStatus), t.Status));
+            return t == null ? "null" : string.Format("[Id={0}, Status={1}]", t.Id, Enum.GetName(typeof(System.Threading.Tasks.TaskStatus), t.Status));
         }
 
 
@@ -336,6 +337,9 @@ namespace Orleans.Internal
             using (cancellationToken.Register(() =>
                       tcs.TrySetCanceled(cancellationToken), useSynchronizationContext: false))
             {
+                // Comments - WhenAny is a blocking call. It doesn't return until the task is completed. So removing the await.
+                // ConfigureAwait(false) - is also not required. As the scheduling is taken care by the Nekara.
+
                 var firstToComplete = await Task.WhenAny(task, tcs.Task).ConfigureAwait(false);
 
                 if (firstToComplete != task)
@@ -399,6 +403,9 @@ namespace Orleans.Internal
             using (cancellationToken.Register(() =>
                       tcs.TrySetCanceled(cancellationToken), useSynchronizationContext: false))
             {
+                // Comments - WhenAny is a blocking call. It doesn't return until the task is completed. So removing the await.
+                // ConfigureAwait(false) - is also not required. As the scheduling is taken care by the Nekara.
+
                 var firstToComplete = await Task.WhenAny(task, tcs.Task).ConfigureAwait(false);
 
                 if (firstToComplete != task)
@@ -429,7 +436,7 @@ namespace Orleans.Internal
 
             var resolver = new TaskCompletionSource<T>();
 
-            if (task.Status == TaskStatus.RanToCompletion)
+            if (task.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
             {
                 resolver.TrySetResult(task.Result);
             }
@@ -443,7 +450,7 @@ namespace Orleans.Internal
             }
             else
             {
-                if (task.Status == TaskStatus.Created) task.Start();
+                if (task.Status == System.Threading.Tasks.TaskStatus.Created) task.Start();
 
                 task.ContinueWith(t =>
                 {
@@ -482,14 +489,14 @@ namespace Orleans.Internal
                 return Task.CompletedTask;
             }
 
-            var waitForCancellation = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var waitForCancellation = new TaskCompletionSource<object>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
             token.Register(obj =>
             {
                 var tcs = (TaskCompletionSource<object>)obj;
                 tcs.TrySetResult(null);
             }, waitForCancellation);
 
-            return waitForCancellation.Task;
+            return waitForCancellation.task;
         }
     }
 }

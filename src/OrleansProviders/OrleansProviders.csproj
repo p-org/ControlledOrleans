@@ -11,4 +11,10 @@
     <OrleansBuildTimeCodeGen>true</OrleansBuildTimeCodeGen>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="NekaraClient">
+      <HintPath>..\..\..\..\..\Documents\ts_modify\TestingService\NekaraClient\bin\Debug\netstandard2.0\NekaraClient.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

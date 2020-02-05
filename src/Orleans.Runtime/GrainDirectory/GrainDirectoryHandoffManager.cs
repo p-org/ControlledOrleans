@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime.Scheduler;
 
@@ -342,7 +342,7 @@ namespace Orleans.Runtime.GrainDirectory
                     for (var i = tasks.Length - 1; i >= 0; i--)
                     {
                         // Retry failed tasks next time.
-                        if (tasks[i].Status != TaskStatus.RanToCompletion) continue;
+                        if (tasks[i].Status != System.Threading.Tasks.TaskStatus.RanToCompletion) continue;
 
                         // Record the applications which lost the registration race (duplicate activations).
                         var winner = await tasks[i];
@@ -386,7 +386,7 @@ namespace Orleans.Runtime.GrainDirectory
                     for (var i = tasks.Length - 1; i >= 0; i--)
                     {
                         // Retry failed tasks next time.
-                        if (tasks[i].Status != TaskStatus.RanToCompletion) continue;
+                        if (tasks[i].Status != System.Threading.Tasks.TaskStatus.RanToCompletion) continue;
 
                         // Remove tasks which completed.
                         multiActivations.RemoveAt(i);

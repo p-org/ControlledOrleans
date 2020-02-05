@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Orleans.Configuration;
@@ -290,8 +290,8 @@ namespace Orleans.Runtime.GrainDirectory
                 return;
 
             var batchResponses = new List<RemoteClusterActivationResponse[]>();
-                   
-            var tasks = remoteClusters.Select(async remotecluster => 
+
+            var tasks = remoteClusters.Select(async remotecluster =>
             {
                 // find gateway and send batched request
                 try
@@ -313,7 +313,7 @@ namespace Orleans.Runtime.GrainDirectory
             }).ToList();
  
             // wait for all the responses to arrive or fail
-            await Task.WhenAll(tasks);
+            await System.Threading.Tasks.Task.WhenAll(tasks);
 
             if (logger.IsEnabled(LogLevel.Debug))
             { 

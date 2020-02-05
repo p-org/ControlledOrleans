@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -30,7 +30,7 @@ namespace Orleans.Networking.Shared
             this.schedulers = schedulers;
         }
 
-        public ValueTask<IConnectionListener> BindAsync(EndPoint endpoint, CancellationToken cancellationToken = default)
+        public System.Threading.Tasks.ValueTask<IConnectionListener> BindAsync(EndPoint endpoint, CancellationToken cancellationToken = default)
         {
             if (!(endpoint is IPEndPoint ipEndpoint))
             {
@@ -39,7 +39,7 @@ namespace Orleans.Networking.Shared
 
             var listener = new SocketConnectionListener(ipEndpoint, this.socketConnectionOptions, this.trace, this.schedulers);
             listener.Bind();
-            return new ValueTask<IConnectionListener>(listener);
+            return new System.Threading.Tasks.ValueTask<IConnectionListener>(listener);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -98,7 +98,7 @@ namespace Orleans.Runtime.MembershipService
             var failed = new List<SiloAddress>();
             for (var i = 0; i < tasks.Count; i++)
             {
-                if (tasks[i].Status != TaskStatus.RanToCompletion || tasks[i].GetAwaiter().GetResult() > 0)
+                if (tasks[i].Status != System.Threading.Tasks.TaskStatus.RanToCompletion || tasks[i].GetAwaiter().GetResult() > 0)
                 {
                     failed.Add(members[i]);
                 }

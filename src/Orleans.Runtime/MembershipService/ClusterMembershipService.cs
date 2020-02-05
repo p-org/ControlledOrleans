@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Microsoft.Extensions.Logging;
 using Orleans.Internal;
 using Orleans.Runtime.MembershipService;
@@ -38,14 +38,14 @@ namespace Orleans.Runtime
 
         public IAsyncEnumerable<ClusterMembershipSnapshot> MembershipUpdates => this.updates;
 
-        public ValueTask Refresh(MembershipVersion targetVersion)
+        public System.Threading.Tasks.ValueTask Refresh(MembershipVersion targetVersion)
         {
             if (targetVersion != default && targetVersion != MembershipVersion.MinValue && this.snapshot.Version >= targetVersion)
                 return default;
 
             return RefreshAsync(targetVersion);
 
-            async ValueTask RefreshAsync(MembershipVersion v)
+            async System.Threading.Tasks.ValueTask RefreshAsync(MembershipVersion v)
             {
                 var didRefresh = false;
                 do

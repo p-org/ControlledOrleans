@@ -5,11 +5,11 @@ using Orleans;
 using Orleans.Hosting;
 using Orleans.TestingHost;
 
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models;
 
 namespace TestExtensions
 {
-    public class DefaultClusterFixture : IDisposable, Xunit.IAsyncLifetime
+    public class DefaultClusterFixture : IDisposable, Nekara.Models.Xunit.IAsyncLifetime
     {
         static DefaultClusterFixture()
         {

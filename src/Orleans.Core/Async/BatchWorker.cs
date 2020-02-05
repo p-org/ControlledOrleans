@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Nekara.Client; using Nekara.Models; 
 using Orleans.Timers.Internal;
 
 namespace Orleans
@@ -115,7 +115,7 @@ namespace Orleans
                 startingCurrentWorkCycle = false;
 
                 // chain a continuation that checks for more work, on the same scheduler
-                currentWorkCycle.ContinueWith(t => this.CheckForMoreWork(), TaskScheduler.Current);
+                currentWorkCycle.ContinueWith(t => this.CheckForMoreWork(), System.Threading.Tasks.TaskScheduler.Current);
             }
         }
 

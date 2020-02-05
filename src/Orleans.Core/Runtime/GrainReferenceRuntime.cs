@@ -7,16 +7,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Nekara.Core;
-using Nekara.Client;
+using Nekara.Client; using Nekara.Models; 
 
 namespace Orleans.Runtime
 {
     internal class GrainReferenceRuntime : IGrainReferenceRuntime
     {
-        public static ITestingService nekara = RuntimeEnvironment.Client.Api;
-
         private const bool USE_DEBUG_CONTEXT = false;
         private const bool USE_DEBUG_CONTEXT_PARAMS = false;
         private static readonly ConcurrentDictionary<int, string> debugContexts = new ConcurrentDictionary<int, string>();
@@ -69,8 +65,6 @@ namespace Orleans.Runtime
                 this.serializationManager.DeepCopyElementsInPlace(arguments);
             }
 
-            // Inform Nekara server about the creation of the Task
-            nekara.CreateTask();
             var request = new InvokeMethodRequest(reference.InterfaceId, reference.InterfaceVersion, methodId, arguments);
 
             if (IsUnordered(reference))
@@ -137,7 +131,7 @@ namespace Orleans.Runtime
         {
             bool isOneWayCall = (options & InvokeMethodOptions.OneWay) != 0;
 
-            var resolver = isOneWayCall ? null : new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var resolver = isOneWayCall ? null : new TaskCompletionSource<object>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
             this.RuntimeClient.SendRequest(reference, request, resolver, debugContext, options, reference.GenericArguments);
             return isOneWayCall ? null : resolver.Task;
         }
