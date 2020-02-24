@@ -35,15 +35,19 @@ namespace Orleans.Runtime.Scheduler
 
         /// <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary>
         /// <returns>An enumerable of the tasks currently scheduled.</returns>
-        protected override IEnumerable<Task> GetScheduledTasks()
+        protected override IEnumerable<System.Threading.Tasks.Task> GetScheduledTasks()
         {
-            return new Task[0];
+            return new System.Threading.Tasks.Task[0];
         }
 
         public void RunTask(Task task)
         {
             RuntimeContext.SetExecutionContext(workerGroup.SchedulingContext);
-            bool done = TryExecuteTask(task);
+            /* Changes made for Nekara. The change is
+             * to stmt "bool done = TryExecuteTask(task);"
+             * as the change mentioned below */
+
+            bool done = TryExecuteTask(task.InnerTask);
             if (!done)
                 logger.Warn(ErrorCode.SchedulerTaskExecuteIncomplete4, "RunTask: Incomplete base.TryExecuteTask for Task Id={0} with Status={1}",
                     task.Id, task.Status);
@@ -54,7 +58,11 @@ namespace Orleans.Runtime.Scheduler
 
         internal void RunTaskOutsideContext(Task task)
         {
-            bool done = TryExecuteTask(task);
+            /* Changes made for Nekara. The change is
+             * to stmt "bool done = TryExecuteTask(task);"
+             * as the change mentioned below */
+
+            bool done = TryExecuteTask(task.InnerTask);
             if (!done)
                 logger.Warn(ErrorCode.SchedulerTaskExecuteIncomplete4, "RunTask: Incomplete base.TryExecuteTask for Task Id={0} with Status={1}",
                     task.Id, task.Status);
@@ -62,12 +70,19 @@ namespace Orleans.Runtime.Scheduler
 
         /// <summary>Queues a task to the scheduler.</summary>
         /// <param name="task">The task to be queued.</param>
-        protected override void QueueTask(Task task)
+        protected override void QueueTask(System.Threading.Tasks.Task task)
         {
 #if DEBUG
             if (logger.IsEnabled(LogLevel.Trace)) logger.Trace(myId + " QueueTask Task Id={0}", task.Id);
 #endif
-            workerGroup.EnqueueTask(task);
+            /* Changes made for Nekara. The change is
+             * to stmt "workerGroup.EnqueueTask(task);"
+             * as the change mentioned below */
+
+            Task _t1 = new Task();
+            _t1.InnerTask = task;
+
+            workerGroup.EnqueueTask(_t1);
         }
 
         /// <summary>
@@ -78,7 +93,7 @@ namespace Orleans.Runtime.Scheduler
         /// </returns>
         /// <param name="task">The <see cref="T:System.Threading.Tasks.Task"/> to be executed.</param>
         /// <param name="taskWasPreviouslyQueued">A Boolean denoting whether or not task has previously been queued. If this parameter is True, then the task may have been previously queued (scheduled); if False, then the task is known not to have been queued, and this call is being made in order to execute the task inline without queuing it.</param>
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+        protected override bool TryExecuteTaskInline(System.Threading.Tasks.Task task, bool taskWasPreviouslyQueued)
         {
             RuntimeContext ctx = RuntimeContext.Current;
             bool canExecuteInline = ctx != null && object.Equals(ctx.ActivationContext, workerGroup.SchedulingContext);

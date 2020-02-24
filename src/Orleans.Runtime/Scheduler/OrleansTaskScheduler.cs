@@ -182,12 +182,12 @@ namespace Orleans.Runtime.Scheduler
             systemAgent.Stop();
         }
 
-        protected override IEnumerable<Task> GetScheduledTasks()
+        protected override IEnumerable<System.Threading.Tasks.Task> GetScheduledTasks()
         {
-            return Array.Empty<Task>();
+            return Array.Empty<System.Threading.Tasks.Task>();
         }
 
-        protected override void QueueTask(Task task)
+        protected override void QueueTask(System.Threading.Tasks.Task task)
         {
             var contextObj = task.AsyncState;
 #if DEBUG
@@ -204,7 +204,14 @@ namespace Orleans.Runtime.Scheduler
 
             if (workItemGroup == null)
             {
-                var todo = new TaskWorkItem(this, task, context, this.taskWorkItemLogger);
+                /* Changes made for Nekara. The change is
+             * to stmt "var todo = new TaskWorkItem(this, task, context, this.taskWorkItemLogger);"
+             * as the change mentioned below */
+
+                Task _t1 = new Task();
+                _t1.InnerTask = task;
+
+                var todo = new TaskWorkItem(this, _t1, context, this.taskWorkItemLogger);
                 ScheduleExecution(todo);
             }
             else
@@ -324,7 +331,7 @@ namespace Orleans.Runtime.Scheduler
 
         public override int MaximumConcurrencyLevel => maximumConcurrencyLevel;
 
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+        protected override bool TryExecuteTaskInline(System.Threading.Tasks.Task task, bool taskWasPreviouslyQueued)
         {
             //bool canExecuteInline = WorkerPoolThread.CurrentContext != null;
 
@@ -370,7 +377,12 @@ namespace Orleans.Runtime.Scheduler
             if (workItemGroup == null)
             {
                 RuntimeContext.SetExecutionContext(null);
-                bool done = TryExecuteTask(task);
+
+                /* Changes made for Nekara. The change is
+             * to stmt "bool done = TryExecuteTask(task);"
+             * as the change mentioned below */
+
+                bool done = TryExecuteTask(task.InnerTask);
                 if (!done)
                     logger.Warn(ErrorCode.SchedulerTaskExecuteIncomplete2, "RunTask: Incomplete base.TryExecuteTask for Task Id={0} with Status={1}",
                         task.Id, task.Status);
